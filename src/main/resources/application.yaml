@@ -1,0 +1,16 @@
+
+customer.datasource.host: localhost
+customer.datasource.port: 1521
+customer.datasource.username: cdcexample
+customer.datasource.password: Jaga1010
+
+spring:
+  datasource:
+    url: jdbc:oracle:thin:@localhost:11521:xe
+    username: cdcreceiver
+    password: Jaga1010
+    driver:
+      class: oracle.jdbc.driver.OracleDriver
+  jpa.hibernate.ddl-auto: create-drop
+  jpa.show-sql: true
+  jpa.database-platform: org.hibernate.dialect.OracleDialect
