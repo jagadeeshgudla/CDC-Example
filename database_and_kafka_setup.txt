@@ -1,0 +1,40 @@
+Setup Docker in your system.
+https://docs.docker.com/desktop/install/windows-install/#:~:text=Download%20the%20installer%20using%20the,Program%20Files%5CDocker%5CDocker%20.
+
+-- Enterprise DB Creation --
+
+1. Log into Oracle Continer registry. If you don't have Oracle account, create one. https://profile.oracle.com/myprofile/account/create-account.jspx
+If you have account, run below command in the commond prompt. 
+
+docker login container-registry.oracle.com
+
+2. Run below command to pull the image from container. Version you can change if you want. Go to below page >> scroll to bottom, you can find the version table.
+
+https://container-registry.oracle.com/ords/f?p=113:4:109122294674385:::4:P4_REPOSITORY,AI_REPOSITORY,AI_REPOSITORY_NAME,P4_REPOSITORY_NAME,P4_EULA_ID,P4_BUSINESS_AREA_ID:9,9,Oracle%20Database%20Enterprise%20Edition,Oracle%20Database%20Enterprise%20Edition,1,0&cs=3aPos_0qab8DgpF0SIRSn4BrtYQEoRVft_f0VGrd3mCh0MmoljzT5l5vgXwduFqcdg9WEyuaPScV3Gu0LOwuVVA
+
+docker pull container-registry.oracle.com/database/enterprise:19.3.0.0
+
+3. Run below command to create container out of the image. Version should match in step 2 and step3.
+
+                      1521:1521
+<Your Windows port number>:<Oracle port number from the container>
+
+oracle-db is container name.
+<<Password for sys account>>  -- with which you can connect to DB from sql developer as sysdba
+
+docker run -d --name oracle-db -p 1521:1521 -e ORACLE_SID=ORCLCDB -e ORACLE_PDB=ORCLPDB1 -e ORACLE_PWD=<<Password for sys account>> container-registry.oracle.com/database/enterprise:19.3.0.0
+
+4. Once your database is up and running, follow steps from below page to setup Oracle DB for Debezium.
+
+https://debezium.io/blog/2022/09/30/debezium-oracle-series-part-1/
+
+
+
+
+
+ --- Once your DB is setup, if you want to stream data to another db, create one more enterprise/express db using docker, configure it in application.yaml.
+
+5. Once you created kafka and kafka-zookeeper using the zk-single-kafka-single.yml , use below command to create topic.
+
+docker exec -t kafka1 /usr/bin/kafka-topics --create --topic cdc-events --bootstrap-server localhost:9092 
+
